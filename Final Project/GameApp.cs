@@ -15,6 +15,8 @@ namespace Final_Project
             Console.WriteLine("Hello");
             Console.WriteLine("Let's play some games");
             Console.WriteLine("Press 1 to play Blackjack");
+            Console.WriteLine("Press 2 to play Hangman");
+            Console.WriteLine("Press 3 to play Battleship");
 
             userchoice = Console.ReadLine();
 
