@@ -1,4 +1,4 @@
-﻿
+﻿using BattleShip.BattleShipApp;
 
 namespace Final_Project
 {
@@ -13,7 +13,7 @@ namespace Final_Project
             Console.Clear(); // clearing the screen so if the user returns from another game they'll get the menu screen
 
             Console.WriteLine("Hello");
-            Console.WriteLine("Let's play some games");
+            Console.WriteLine("Let's play some games\n");
             Console.WriteLine("Press 1 to play Blackjack");
             Console.WriteLine("Press 2 to play Hangman");
             Console.WriteLine("Press 3 to play Battleship");
@@ -36,6 +36,8 @@ namespace Final_Project
                 case 2:
                     Hangman.runHangman();
                     break;
+                case 3:
+                    BattleShipApp.BattleShipGame();
                 default:
                     Console.WriteLine("I don't think that was a valid option. Press any key to try again.");
                     Console.ReadLine();
