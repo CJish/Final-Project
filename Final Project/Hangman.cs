@@ -7,14 +7,6 @@ namespace Final_Project
 {
     internal class Hangman
     {
-        // TODO: It doesn't seem to work right - the hangman picture might not be updating with every wrong letter and the game definitely gives the "you win" message prior to the user entering the correct answers.
-        // TODO: Instead of quitting the program, I want it to ask if you want to play again and, if not, go back to the title screen where you can choose a different game
-        // TODO: I'd recommend putting some console clearing in here
-        // TODO: why is it that sometimes it shows the hangman and sometimes it doesn't?
-        // TODO: why are the letters that I've guessed all over the place?
-        // TODO: What's with the 8 lines of - in there?
-        // TODO: Read a random word from a JSON or .txt file that has way more than just 9 words (but keep those easy ones for troubleshooting)
-        // TODO: implement a high score system that writes to a file and give the user a way to check the high scores
         public static void runHangman()
         {
             Console.WriteLine("Time to play hangman!!");

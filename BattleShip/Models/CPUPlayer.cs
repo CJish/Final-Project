@@ -44,7 +44,7 @@ namespace BattleShip.Models
         {
             string coordinates;
             do
-            { // TODO: better method for getting random coords here
+            { 
                 char[] coords = new char[2];
                 coords[0] = (char)(rnd.Next() % 10);
                 coords[1] = (char)(rnd.Next() % 10);
