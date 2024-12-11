@@ -1,36 +1,47 @@
-﻿
+﻿using BattleShip;
+using BattleShip.Models;
+using System.Text.RegularExpressions;
 
 namespace BattleShip.Models
 {
     public class PlayerModel
     {
-        private static string PATTERN = "[a-jA-J]{1}[0-9]{1}"; // why can't I use "sealed"?
-        private static sealed Scanner scanner = new Scanner(System.in); // probably using stringreader
+        private static string PATTERN = "[a-jA-J]{1}[0-9]{1}";
+        internal Regex rgx = new Regex(PATTERN);
         public static string guess;
 
         public PlayerModel() { }
 
-        public void PlaceShips(ShipBoard shipBoard, FiringBoard firingBoard)
+        public virtual void PlaceShips(ShipBoard shipBoard, FiringBoard firingBoard)
         {
+            Ship sub = new Ship("Submarine", 3, 0);
+            Ship sb = new Ship("Small Boat", 2, 0);
+            Ship destroyer = new Ship("Destroyer", 3, 0);
+            Ship carrier = new Ship("Aircraft Carrier", 5, 0);
+            Ship battle = new Ship("BattleShip", 4, 0);
+            List<Ship> shipArray = new List<Ship> { sub, sb, destroyer, carrier, battle };
+
             List<string> thisGeneratedShip;
             try
             {
-                for (ShipType ship : ShipType.values())
+                foreach (Ship ship in shipArray)
                 {
-                    Console.WriteLine($"Placing ship: " + ship.getName() + "; size: " + ship.getSize());
-                    thisGeneratedShip = thisGeneratedShip(ship, shipBoard);
-                    if (isValidBuild(thisGeneratedShip))
+                    Console.WriteLine("PlayerModel.PlaceShips");
+                    Console.WriteLine($"Placing ship: " + ship.GetName() + " size: " + ship.GetSize());
+                    thisGeneratedShip = GenerateShip(ship, shipBoard);
+                    if (IsValidBuild(thisGeneratedShip))
                     {
-                        shipBoard.placeShip(thisGeneratedShip);
+                        shipBoard.PlaceShip(thisGeneratedShip);
                     }
                     Console.Clear();
-                    shipBoard.printShipBoard(firingBoard);
+                    shipBoard.PrintShipBoard(firingBoard);
                 }
             } catch (IndexOutOfRangeException e) // TODO StringIndexOutOfBoundsException
             {
+                Console.WriteLine("Invalid Coordinates:");
                 Console.WriteLine("Valid coordinates are [A-J] and [0-9]");
-                Console.WriteLine("For example, you could do a7 or j0");
-                Console.WriteLine("\tbut not h1 or b10");
+                Console.WriteLine("For example, you could do a7 or J10");
+                Console.WriteLine("\tbut not H0 or b11");
             }
         }
 
@@ -40,12 +51,8 @@ namespace BattleShip.Models
             string word = "";
             Console.WriteLine("Ship horizontal? (true/false)");
 
-            word = scanner.next().trim.toLowerCase();
-            if (word.Equals("t"))
-            {
-                word = "true";
-            }
-            result = Boolean.TryParse(word, true); // Boolean.parseBoolean(word)
+            word = Console.ReadLine().ToLower().Trim(); // TODO: need better input validation here
+            Boolean.TryParse(word, out result); // Boolean.parseBoolean(word)
             return result;
         }
 
@@ -53,15 +60,15 @@ namespace BattleShip.Models
         public bool IsValidBuild(List<String> ship)
         {
             bool result = false;
-            for (string s : ship)
+            foreach (string s in ship)
             {
-                result = s.matches(PATTERN);
+                if (rgx.IsMatch(s)) { result = true; };
             }
             return result;
         }
 
         // create a valid ship object
-        private List<string> GenerateShip(ShipType ship, ShipBoard shipBoard)
+        private List<string> GenerateShip(Ship ship, ShipBoard shipBoard)
         {
             string shipPlacement;
             bool isHorizontal;
@@ -69,11 +76,12 @@ namespace BattleShip.Models
 
             do // switch the while and do portions?
             {
-                Console.WriteLine("Enter the position you want:" + ship.getName() + " (e.g., C3: ");
+                Console.WriteLine("PlayerModel.GenerateShip");
+                Console.WriteLine("Enter the position you want:" + ship.GetName() + " (e.g., C3: ");
                 shipPlacement = GetCoordinates();
-                isHorizontal = isShipHorizontal();
-                shipGenerated = ship.generateShipPlacement(ship, shipPlacement, isHorizontal);
-            } while (!shipBoard.isValidPlacement(shipGenerated));
+                isHorizontal = IsShipHorizontal();
+                shipGenerated = Ship.GenerateShipPlacement(ship, shipPlacement, isHorizontal);
+            } while (!shipBoard.IsValidPlacement(shipGenerated));
             return shipGenerated;
         }
 
@@ -82,15 +90,16 @@ namespace BattleShip.Models
             string coordinates;
             do
             {
+                Console.WriteLine("PlayerModel.GetCoordinates");
                 Console.WriteLine("Valid coordinates are [A-J] and [0-9]");
-                Console.WriteLine("For example, you could do a7 or J0");
+                Console.WriteLine("For example, you could do A7 or J10");
                 Console.WriteLine("\tbut not H1 or b10");
-                coordinates = scanner.next().trim().toLowerCase();
-                if (!coordinates.matches(PATTERN))
+                coordinates = Console.ReadLine();
+                if (!rgx.IsMatch(coordinates))
                 {
                     Console.WriteLine("Please try again.");
                 }
-            } while (!coordinates.matches(PATTERN));
+            } while (!rgx.IsMatch(coordinates));
             return coordinates;
         }
 
@@ -100,7 +109,7 @@ namespace BattleShip.Models
             Console.WriteLine("\tValid coordinates are [A-J] and [0-9]");
             guess = GetCoordinates();
 
-            while (!guess.matches(PATTERN))
+            while (!rgx.IsMatch(guess))
             {
                 Console.WriteLine("Invalid coordinates.");
                 Console.WriteLine("\tValid coordinates are [A-J] and [0-9]");

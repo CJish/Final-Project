@@ -8,21 +8,20 @@ namespace BattleShip
     public class BattleShipApp
     {
         private PlayerModel player1 = new PlayerModel();
-        private PlayerModel player2 = new CPUPlayer();
+        private CPUPlayer player2 = new CPUPlayer();
         private static ShipBoard player1ShipBoard = new ShipBoard(); // had to make static so I could initialize it
         private static ShipBoard player2ShipBoard = new ShipBoard();
         private FiringBoard player1FiringBoard = new FiringBoard(player2ShipBoard);
         private FiringBoard player2FiringBoard = new FiringBoard(player1ShipBoard);
         private bool isCPUPlaying = false;
-        private string bannerDirectory = "./filelocation";
+        private string bannerDirectory = "./Banners/";
 
         // Let's instantiate the board and players:
         public void BattleShipGame() //throws IOException
         {
-            ShowBanner("banner.txt");
-            player1 = new PlayerModel();
-            player2 = new CPUPlayer();
-
+            ShowBanner("./Banners/Intro_Banner.txt");
+            Console.Clear();
+            StartGame();
         }
 
         // start the game with an option to view instructions
@@ -33,10 +32,9 @@ namespace BattleShip
             string response = Console.ReadLine().ToLower().Trim();
             if (response.Equals("y") || response.Equals("yes"))
             {
-                showTutorial();
+                ShowTutorial();
                 Console.WriteLine("Hit the 'enter' key to continue");
-                response = Console.ReadLine();
-                Console.Clear();
+                Console.ReadLine();
             }
             Console.Clear();
             PlaceShips();
@@ -45,8 +43,13 @@ namespace BattleShip
 
         private void ShowBanner(string bannerFileName) // throws IOexception?
         {
-            string path = "./" + bannerFileName;
-            File.ReadAllLines(path);
+            Console.Clear();
+            string[] banner = File.ReadAllLines(bannerFileName);
+            foreach (string line in banner)
+            {
+                Console.WriteLine(line);
+            }
+            Console.ReadLine();
         }
 
         // place the ships on the board
@@ -68,12 +71,12 @@ namespace BattleShip
         {
             while (!player1ShipBoard.AllShipsSunk() && !player2ShipBoard.AllShipsSunk())
             {
-                takeTurns(player1, player2);
+                TakeTurns(player1, player2);
             }
         }
 
         // Manage the players' turns
-        private void takeTurns(PlayerModel player1, PlayerModel player2)
+        private void TakeTurns(PlayerModel player1, PlayerModel player2)
         {
             while (!player1ShipBoard.AllShipsSunk() && !player2ShipBoard.AllShipsSunk())
             {
@@ -136,7 +139,8 @@ namespace BattleShip
             }
         }
 
-        public void showTutorial() // throws IO?
+        // TODO: make into a banner
+        public static void ShowTutorial() // throws IO?
         {
             Console.WriteLine("Each of the two players has their own board consisting of a 10 x 10 grid\n");
             Console.WriteLine("The game board will use '-' to represent water");
