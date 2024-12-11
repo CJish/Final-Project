@@ -1,29 +1,105 @@
-﻿
-
+﻿using System.Runtime.CompilerServices;
 
 namespace BattleShip.Models
 {
-    public enum ShipType
+
+    public abstract class ShipType
     {
-        SUBMARINE("Submarine", 3);
-        SMALL_BOAT("Small Boat", 2);
-        DESTROYER("Destroyer", "3");
-        AIRCRAFT_CARRIER("Aircraft Carrier", 5);
-        BATTLESHIP("Battleship", 4);
+        private int _Hits { get; }
+        private int _Size { get; }
+        private string _Name { get; }
 
-
-        private sealed string name;
-        private sealed int size;
-
-        ShipType(string name, int size)
+        public ShipType()
         {
-            this.name = name;
-            this.size = size;
+            _Name = this._Name;
+            _Size = this._Size;
+            _Hits = 0;
         }
 
-        public string GetName() { return name; }
+        public override string ToString() => GetType().Name;
 
-        public interface GetSize() { return size; }
+        public int Hits { get; }
+
+        public int Size { get; }
+
+        public string Name { get; }
+
     }
+
+    public sealed class Submarine : ShipType
+    {
+        //public Submarine(string name, int size, int hits) : this(name, size, hits) { }
+
+        public Submarine(string name, int size, int hits): base() 
+        {
+            name = "Submarine";
+            size = 3;
+        }
+
+        public int Hits { get; }
+
+        public int Size { get; }
+
+        new public string Name { get; }
     }
+
+    public sealed class SmallBoat : ShipType
+    {
+        public SmallBoat(string name, int size, int hits): base()
+        {
+            name = "Small Boat";
+            size = 2;
+        }
+
+        public int Hits { get; }
+
+        public int Size { get; }
+
+        new public string Name { get; }
+    }
+
+    public sealed class Destroyer : ShipType
+    {
+        public Destroyer(string name, int size, int hits): base()
+        {
+            name = "Destroyer";
+            size = 3;
+        }
+
+        public int Hits { get; }
+
+        public int Size { get; }
+
+        new public string Name { get; }
+    }
+
+    public sealed class AircraftCarrier : ShipType
+    {
+        public AircraftCarrier(string name, int size, int hits) : base()
+        {
+            name = "Aircraft Carrier";
+            size = 5;
+        }
+
+        public int Hits { get; }
+
+        public int Size { get; }
+
+        new public string Name { get; }
+    }
+
+    public sealed class Battle : ShipType
+    {
+        public Battle(string name, int size, int hits) : base()
+        {
+            name = "Battle Ship";
+            size = 4;
+        }
+    }
+
+    //public int Hits { get; }
+
+    //public int Size { get; }
+
+    //public string Name { get; }
 }

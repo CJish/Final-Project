@@ -1,6 +1,7 @@
 ﻿
 
 using System.Runtime.ConstrainedExecution;
+using System.Text.RegularExpressions;
 
 namespace BattleShip.Models
 {
@@ -8,23 +9,32 @@ namespace BattleShip.Models
     {
         private Random random;
         private string previousHit;
-        private sealed string PATTERN = "[a-jA-J]{1}[0-9]{1}";
+        private static string PATTERN = "[a-jA-J]{1}[0-9]{1}";
+        internal Regex rgx = new Regex(PATTERN);
+        Random rnd = new Random();
 
         public CPUPlayer() { random = new Random(); }
 
         // have the CPU place its ships
         public override void PlaceShips(ShipBoard shipBoard, FiringBoard firingBoard)
         {
+            Ship sub = new Ship("Submarine", 3, 0);
+            Ship sb = new Ship("Small Boat", 2, 0);
+            Ship destroyer = new Ship("Destroyer", 3, 0);
+            Ship carrier = new Ship("Aircraft Carrier", 5, 0);
+            Ship battle = new Ship("BattleShip", 4, 0);
+            List<Ship> shipArray = new List<Ship> { sub, sb, destroyer, carrier, battle };
+
             List<string> thisGeneratedShip;
-            for (ShipType ship : ShipType.values())
+            foreach (Ship ship in shipArray)
             {
-                Console.WriteLine($"CPU is placing {ship.getName()}");
-                thisGeneratedShip = thisGeneratedShip(ship, shipBoard);
+                Console.WriteLine($"CPU is placing {ship.GetName()}");
+                thisGeneratedShip = GenerateShip(ship, shipBoard);
                 Console.WriteLine(thisGeneratedShip);
-                if (isValidBuild(thisGeneratedShip))
+                if (IsValidBuild(thisGeneratedShip))
                 {
-                    shipBoard.placeShip(thisGeneratedShip);
-                    Console.WriteLine($"CPU placed {ship.getName()}");
+                    shipBoard.PlaceShip(thisGeneratedShip);
+                    Console.WriteLine($"CPU placed {ship.GetName()}");
                 }
             }
         }
@@ -34,19 +44,18 @@ namespace BattleShip.Models
         {
             string coordinates;
             do
-            {
-                char letter = (char)(random.nextInt(9) + ('a'));
-                char number = (char)(random.nextInt(10) - 1);
-                string s1 = String.valueOf(letter);
-                string s2 = String.valueOf(number + 1);
-                coordinates = s1 + s2;
+            { // TODO: better method for getting random coords here
+                char[] coords = new char[2];
+                coords[0] = (char)(rnd.Next() % 10);
+                coords[1] = (char)(rnd.Next() % 10);
+                coordinates = coords.ToString();
             }
-            while (!coordinates.matches(PATTERN));
+            while (!rgx.IsMatch(coordinates));
             return coordinates;
         }
 
         // CPU creates valid ships
-        private List<string> GenerateShip(ShipType ship, ShipBoard shipBoard)
+        private List<string> GenerateShip(Ship ship, ShipBoard shipBoard)
         {
             string shipPlacement;
             bool isHorizontal;
@@ -94,7 +103,7 @@ namespace BattleShip.Models
                 {
                     guess = GenerateNearbyTarget(previousHit, firingBoard);
                 }
-                while (!guess.matches(PATTERN));
+                while (!rgx.IsMatch(guess));
             }
 
             else
@@ -105,7 +114,7 @@ namespace BattleShip.Models
                     {
                         guess = GetCoordinates();
                     }
-                    while (firingBoard.GetFireRecord().contains(guess));
+                    while (firingBoard.GetFireRecord().Contains(guess));
                 }
                 else
                 {
@@ -119,32 +128,32 @@ namespace BattleShip.Models
         private string GenerateNearbyTarget(String previousHit, FiringBoard firingBoard)
         {
             string guess = null;
-            char row = previousHit.charAt(0);
-            char col = previousHit.charAt(1);
+            char row = previousHit[0];
+            char col = previousHit[1];
 
             // shoot adjacent to the previous hit
             do
             {
-                int direction = random.nextInt(4);
+                int direction = random.Next(4);
                 switch (direction)
                 {
                     case 0: // north
-                        guess = string.valueOf(row) + (col += 1);
+                        guess = row.ToString() + (col + 1).ToString();
                         break;
                     case 1: // south
-                        guess = string.valueOf(row) + (col -= 1);
+                        guess = row.ToString() + (col - 1).ToString();
                         break;
                     case 2: //west
-                        guess = string.valueOf(row -= 1) + col;
+                        guess = (row - 1).ToString() + col.ToString();
                         break;
                     case 3: // east
-                        guess = string.valueOf(row += 1) + col;
+                        guess = (row + 1).ToString() + col.ToString();
                         break;
                     default:
                         return previousHit;
                 }
             }
-            while (firingBoard.GetFireRecord().contains(guess));
+            while (firingBoard.GetFireRecord().Contains(guess));
             return guess;
         }
 

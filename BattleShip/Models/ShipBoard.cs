@@ -1,18 +1,20 @@
 ﻿
 
+using System.Collections;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace BattleShip.Models
 {
     public class ShipBoard
     {
-        private List<List<string>> shipBoard;
+        private List<List<string>> shipBoard = new List<List<string>>(); 
 
         public void PlaceShip(List<string> location)
         {
             if (shipBoard == null)
             {
-                List<string> shipBoard = new List<string>();
+                ArrayList shipBoard = new ArrayList();
             }
             shipBoard.Add(location);
         }
@@ -21,14 +23,18 @@ namespace BattleShip.Models
         public bool Sink()
         {
             bool result = false;
-            for (List<string> boat : shipBoard)
+
+            for (int i = 0; i < shipBoard.Count; i++) 
             {
-                if (boat.isEmpty())
+                for (int j = 0; j < shipBoard.ElementAt(i).Count(); j++) 
                 {
-                    shipBoard.remove(boat);
-                    result = true;
-                    Console.ReadLine(); //pause
-                    break;
+                    if (j.Equals(null))
+                    {
+                        shipBoard.Remove(shipBoard.ElementAt(i));
+                        result = true;
+                        Console.ReadLine(); 
+                        break;
+                    }
                 }
             }
             return result;
@@ -43,9 +49,9 @@ namespace BattleShip.Models
                 List<string> shipBoard = new List<string>();
                 result = true;
             }
-            for (List<string> shipList : shipBoard)
+            foreach (List<string> shipList in shipBoard)
             {
-                for (string ship : shipList)
+                foreach (string ship in shipList)
                 {
                     if (!location.Contains(ship))
                     {
@@ -61,29 +67,40 @@ namespace BattleShip.Models
                     }
                 }
             }
-
             return result;
         }
 
         // prints the current state of ShipBoard
         public void PrintShipBoard(FiringBoard firingBoard)
         {
-            char[][] board = DisplayShipBoard(firingBoard);
-            for (char[] chars : board)
+            char[,] board = DisplayShipBoard(firingBoard);
+
+            for (int i = 0; i < board.Length; i++)
             {
                 List<string> tempBoardList = new List<string>();
-                for (char c : chars)
+                for (int j = 0; j < board.GetLength(i); j++)
                 {
-                    tempBoardList.Add(color(c));
+                    tempBoardList.Add(Color(board[i, j]));
                 }
                 Console.WriteLine(tempBoardList);
             }
         }
 
-        // The shipboard
-        private char[][] DisplayShipBoard(FiringBoard firingBoard)
+        //    foreach (char[] chars in board)
+        //    {
+        //        List<string> tempBoardList = new List<string>();
+        //        foreach (char c in chars)
+        //        {
+        //            tempBoardList.Add(Color(c));
+        //        }
+        //        Console.WriteLine(tempBoardList);
+        //    }
+        //}
+
+        // TODO: This is in here twice. Fix that
+        private char[,] DisplayShipBoard(FiringBoard firingBoard)
         {
-            char[][] board =
+            char[,] board = new char[11,11]
             {
                 {'*', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', },
                 {'a', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', },
@@ -100,28 +117,28 @@ namespace BattleShip.Models
 
             if (shipBoard != null)
             {
-                for (List<string> boat : shipBoard)
+                foreach (List<string> boat in shipBoard)
                 {
-                    for (string b : boat)
+                    foreach (string b in boat)
                     {
-                        char row = b.chartAt(0);
-                        char col = b.chartAt(1);
+                        char row = b[0];
+                        char col = b[1];
                         int colInt = (col - '1') + 1;
                         int rowInt = (row - 'a' + 1);
-                        board[rowInt][colInt + 1] = 'S';
+                        board[rowInt, colInt + 1] = 'S';
                     }
                 }
             }
 
             if (firingBoard.GetFiringBoardHits() != null)
             {
-                for (string record : firingBoard.GetFiringBoardHits())
+                foreach (string record in firingBoard.GetFiringBoardHits())
                 {
-                    char row = record.chartAt(0);
-                    char col = record.chartAt(1);
+                    char row = record[0];
+                    char col = record[1];
                     int colInt = (col - '1') + 1;
                     int rowInt = (row - 'a' + 1);
-                    board[rowInt][colInt + 1] = 'X';
+                    board[rowInt, colInt + 1] = 'X';
                 }
             }
             return board;
@@ -144,7 +161,7 @@ namespace BattleShip.Models
                 case 'S':
                     return gray + grid + resetColor;
                 default:
-                    string v = char.GetNumericValue(grid); // String.valueOf(grid)
+                    string v = grid.ToString();
                     return v;
             }
         }
@@ -153,7 +170,7 @@ namespace BattleShip.Models
         public bool AllShipsSunk()
         {
             bool result = false;
-            if (shipBoard == null || shipBoard.size() == 0)
+            if (shipBoard == null || shipBoard.Count() == 0)
             {
                 result = true;
             }

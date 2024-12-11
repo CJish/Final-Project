@@ -27,9 +27,9 @@ namespace BattleShip.Models
             }
             else
             {
-                for (string shot : fireRecord)
+                foreach (string shot in fireRecord)
                 {
-                    if (coords.equals(shot))
+                    if (coords.Equals(shot))
                     {
                         Console.WriteLine("You already shot at that same location.");
                         Console.WriteLine("\tBut you shoot at it again with the same result");
@@ -37,8 +37,8 @@ namespace BattleShip.Models
                     }
                     else
                     {
-                        fireRecord.add(coords);
-                        impact(coords);
+                        fireRecord.Add(coords);
+                        Impact(coords);
                         break;
                     }
                 }
@@ -49,17 +49,17 @@ namespace BattleShip.Models
         public bool Impact(string coords)
         {
             bool result = false;
-            for (List<string> boat : shipBoard.GetShipBoard()) // foreach
+            foreach (List<string> boat in shipBoard.GetShipBoard()) // foreach
             {
-                for (string b : boat) // foreach
+                foreach (string b in boat) // foreach
                 {
-                    if (b.equals(coords))
+                    if (b.Equals(coords))
                     {
-                        firingBoardHits.add(coords);
-                        fireRecord.add(coords);
+                        firingBoardHits.Add(coords);
+                        fireRecord.Add(coords);
                         Console.WriteLine($"That round hit a ship! {coords}");
                         Console.ReadLine();
-                        hit(coords);
+                        Hit(coords);
                         result = true;
                         break;
                     }
@@ -71,32 +71,32 @@ namespace BattleShip.Models
         // successfult hit takes out a spot on the grid
         private void Hit(string coords)
         {
-            for (List<string> boat : shipBoard.GetShipBoard())
+            foreach (List<string> boat in shipBoard.GetShipBoard())
             {
                 cpuHit = coords;
-                boat.remove(coords);
+                boat.Remove(coords);
             }
         }
 
         // updates the state of the firing board
         public void PrintFiringBoard()
         {
-            char[][] board = DisplayFiringBoard();
-            for (char[] chars : board)
+            char[,] board = DisplayFiringBoard();
+            for (int i = 0; i < board.GetLength(0); i++)
             {
                 List<string> tempBoardList = new List<string>();
-                for (char c : chars)
+                for (int j = 0; j < board.GetLength(1); j++)
                 {
-                    tempBoardList.add(color(c));
+                    tempBoardList.Add(Color((char)j));
                 }
                 Console.WriteLine(tempBoardList);
             }
         }
 
         // TODO how is this different than the ShipBoard method?
-        private char[][] DisplayFiringBoard()
+        private char[,] DisplayFiringBoard()
         {
-            char[][] board =
+            char[,] board = new char[,]
             {
                 {'*', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',},
                 {'a', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-',},
@@ -113,22 +113,22 @@ namespace BattleShip.Models
 
             if (fireRecord != null && firingBoardHits != null)
             {
-                for (String record : fireRecord)
+                foreach (String record in fireRecord)
                 {
-                    char row = record.charAt(0);
-                    char col = record.charAt(1);
+                    char row = record[0];
+                    char col = record[1];
                     int colInt = (col - '1') + 1;
                     int rowInt = (row - 'a' + 1);
-                    board[rowInt][colInt + 1] = 'M';
+                    board[rowInt, colInt + 1] = 'M';
                 }
 
-                for (String record : firingBoardHits)
+                foreach (String record in firingBoardHits)
                 {
-                    char row = record.charAt(0);
-                    char col = record.charAt(1);
+                    char row = record[0];
+                    char col = record[1];
                     int colInt = (col - '1') + 1;
                     int rowInt = (row - 'a' + 1);
-                    board[rowInt][colInt + 1] = 'H';
+                    board[rowInt, colInt + 1] = 'H';
                 }
             }
             return board;
@@ -150,7 +150,7 @@ namespace BattleShip.Models
                 case 'M':
                     return gray + grid + resetColor;
                 default:
-                    String v = String.valueOf(grid);
+                    String v = grid.ToString();
                     return v;
             }
         }

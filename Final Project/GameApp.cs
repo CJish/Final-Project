@@ -1,4 +1,4 @@
-﻿using BattleShip.BattleShipApp;
+﻿using BattleShip;
 
 namespace Final_Project
 {
@@ -37,7 +37,9 @@ namespace Final_Project
                     Hangman.runHangman();
                     break;
                 case 3:
-                    BattleShipApp.BattleShipGame();
+                    BattleShipApp battleship = new BattleShipApp();
+                    battleship.BattleShipGame();
+                        break;
                 default:
                     Console.WriteLine("I don't think that was a valid option. Press any key to try again.");
                     Console.ReadLine();
