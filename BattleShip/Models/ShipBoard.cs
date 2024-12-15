@@ -49,6 +49,9 @@ namespace BattleShip.Models
                 List<string> shipBoard = new List<string>();
                 result = true;
             }
+
+            if (!shipBoard.Any()) { result = true; }
+
             foreach (List<string> shipList in shipBoard)
             {
                 foreach (string ship in shipList)
@@ -75,29 +78,22 @@ namespace BattleShip.Models
         {
             char[,] board = DisplayShipBoard(firingBoard);
 
-            for (int i = 0; i < board.Length; i++)
+            for (int i = 0; i < board.GetLength(0); i++)
             {
                 List<string> tempBoardList = new List<string>();
-                for (int j = 0; j < board.GetLength(i); j++)
+                for (int j = 0; j < board.GetLength(1); j++)
                 {
                     tempBoardList.Add(Color(board[i, j]));
                 }
-                Console.WriteLine(tempBoardList);
+                foreach (var item in tempBoardList)
+                {
+                    Console.Write(item + " ");
+                }
+                Console.WriteLine();
             }
         }
 
-        //    foreach (char[] chars in board)
-        //    {
-        //        List<string> tempBoardList = new List<string>();
-        //        foreach (char c in chars)
-        //        {
-        //            tempBoardList.Add(Color(c));
-        //        }
-        //        Console.WriteLine(tempBoardList);
-        //    }
-        //}
-
-        // TODO: This is in here twice. Fix that
+        
         private char[,] DisplayShipBoard(FiringBoard firingBoard)
         {
             char[,] board = new char[11,11]
@@ -121,11 +117,13 @@ namespace BattleShip.Models
                 {
                     foreach (string b in boat)
                     {
-                        char row = b[0];
-                        char col = b[1];
-                        int colInt = (col - '1') + 1;
-                        int rowInt = (row - 'a' + 1);
-                        board[rowInt, colInt + 1] = 'S';
+                        string c = b.ToUpper();
+                        char row = c[0];
+                        char col = c[1];
+                        //row = Char.ToUpper(row);
+                        int colInt = (col - '1') + 2;
+                        int rowInt = (row - 'A');
+                        board[rowInt, colInt] = 'S';
                     }
                 }
             }
@@ -134,10 +132,12 @@ namespace BattleShip.Models
             {
                 foreach (string record in firingBoard.GetFiringBoardHits())
                 {
+                    record.ToUpper();
                     char row = record[0];
                     char col = record[1];
+                    //row = Char.ToUpper(row);
                     int colInt = (col - '1') + 1;
-                    int rowInt = (row - 'a' + 1);
+                    int rowInt = (row - 'A') + 1;
                     board[rowInt, colInt + 1] = 'X';
                 }
             }

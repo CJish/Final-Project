@@ -7,7 +7,7 @@ namespace BattleShip.Models
 {
     internal class CPUPlayer : PlayerModel
     {
-        private Random random;
+        Random random;
         private string previousHit;
         private static string PATTERN = "[a-jA-J]{1}[0-9]{1}";
         internal Regex rgx = new Regex(PATTERN);
@@ -44,11 +44,11 @@ namespace BattleShip.Models
         {
             string coordinates;
             do
-            { 
-                char[] coords = new char[2];
-                coords[0] = (char)(rnd.Next() % 10);
-                coords[1] = (char)(rnd.Next() % 10);
-                coordinates = coords.ToString();
+            {
+                int row = rnd.Next(0, 11);
+                int col = rnd.Next(0, 11);
+                char rowChar = (char)(row + 'A');
+                coordinates = (rowChar + col.ToString());
             }
             while (!rgx.IsMatch(coordinates));
             return coordinates;

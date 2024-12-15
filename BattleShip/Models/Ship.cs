@@ -21,26 +21,21 @@ namespace BattleShip.Models
             int size = shipType.GetSize();
             char firstChar = location[0];
             char secondChar = location[1];
-            //string firstLetter = string.valueOf(firstChar); // redundant, why cast the char to int?
-            //string secondLetter = string.valueOf(secondChar); // redundant, why cast the char to int?
             if (isHorizontal)
             {
                 for (int i = 0; i < size; i++)
                 {
-                    //string result = firstLetter; // redundant, why not just use firstLetter?
-                    //string value = string.valueOf(secondChar); // redundant, why not use secondLetter?
+                    string coords  = (firstChar.ToString() + secondChar.ToString());
+                    shipCoordinates.Add(coords);
                     secondChar++;
-                    shipCoordinates.Add(firstChar.ToString());
-                    shipCoordinates.Add(secondChar.ToString());
                 }
             } else
             {
                 for (int i = 0; i < size; i++)
                 {
-                    //string value = string.valueOf(firstChar); // redundant, why not use firstChar
+                    string coords = (firstChar.ToString() + secondChar.ToString());
+                    shipCoordinates.Add(coords);
                     firstChar++;
-                    shipCoordinates.Add(firstChar.ToString());
-                    shipCoordinates.Add(secondChar.ToString());
                 }
             }
             return shipCoordinates;

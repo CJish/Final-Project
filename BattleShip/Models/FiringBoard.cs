@@ -87,13 +87,18 @@ namespace BattleShip.Models
                 List<string> tempBoardList = new List<string>();
                 for (int j = 0; j < board.GetLength(1); j++)
                 {
-                    tempBoardList.Add(Color((char)j));
+                    //tempBoardList.Add(Color((char)j));
+                    tempBoardList.Add(Color(board[i, j]));
                 }
-                Console.WriteLine(tempBoardList);
+                foreach (var item in tempBoardList)
+                {
+                    Console.Write(item + " ");
+                }
+                Console.WriteLine();
             }
         }
 
-        // TODO how is this different than the ShipBoard method?
+        
         private char[,] DisplayFiringBoard()
         {
             char[,] board = new char[,]
@@ -115,19 +120,23 @@ namespace BattleShip.Models
             {
                 foreach (String record in fireRecord)
                 {
+                    record.ToUpper();
                     char row = record[0];
                     char col = record[1];
+                    //row = Char.ToUpper(row);
                     int colInt = (col - '1') + 1;
-                    int rowInt = (row - 'a' + 1);
+                    int rowInt = (row - 'A' + 1);
                     board[rowInt, colInt + 1] = 'M';
                 }
 
                 foreach (String record in firingBoardHits)
                 {
+                    record.ToUpper();
                     char row = record[0];
                     char col = record[1];
+                    //row = Char.ToUpper(row);
                     int colInt = (col - '1') + 1;
-                    int rowInt = (row - 'a' + 1);
+                    int rowInt = (row - 'A' + 1);
                     board[rowInt, colInt + 1] = 'H';
                 }
             }

@@ -26,7 +26,6 @@ namespace BattleShip.Models
             {
                 foreach (Ship ship in shipArray)
                 {
-                    Console.WriteLine("PlayerModel.PlaceShips");
                     Console.WriteLine($"Placing ship: " + ship.GetName() + " size: " + ship.GetSize());
                     thisGeneratedShip = GenerateShip(ship, shipBoard);
                     if (IsValidBuild(thisGeneratedShip))
@@ -37,7 +36,9 @@ namespace BattleShip.Models
                     shipBoard.PrintShipBoard(firingBoard);
                 }
             } catch (IndexOutOfRangeException e) // TODO StringIndexOutOfBoundsException
+            
             {
+                Console.WriteLine(e);
                 Console.WriteLine("Invalid Coordinates:");
                 Console.WriteLine("Valid coordinates are [A-J] and [0-9]");
                 Console.WriteLine("For example, you could do a7 or J10");
@@ -52,15 +53,16 @@ namespace BattleShip.Models
             Console.WriteLine("Ship horizontal? (true/false)");
 
             word = Console.ReadLine().ToLower().Trim(); // TODO: need better input validation here
-            Boolean.TryParse(word, out result); // Boolean.parseBoolean(word)
+            Boolean.TryParse(word, out result);
+            if (word.Equals("t") || word.Equals("T")) { result = true; }; // Boolean.parseBoolean(word)
             return result;
         }
 
         // Validate coordinates
-        public bool IsValidBuild(List<String> ship)
+        public bool IsValidBuild(List<String> shipcoords)
         {
             bool result = false;
-            foreach (string s in ship)
+            foreach (string s in shipcoords) // TODO: right now sets to true if ANY of the strings are a match
             {
                 if (rgx.IsMatch(s)) { result = true; };
             }
@@ -72,16 +74,15 @@ namespace BattleShip.Models
         {
             string shipPlacement;
             bool isHorizontal;
-            List<string> shipGenerated;
+            List<string> shipGenerated; // This list comes from Ship.GenerateShipPlacement
 
             do // switch the while and do portions?
             {
-                Console.WriteLine("PlayerModel.GenerateShip");
-                Console.WriteLine("Enter the position you want:" + ship.GetName() + " (e.g., C3: ");
+                Console.WriteLine("Enter the position you want for your: " + ship.GetName() + " (e.g., C3)");
                 shipPlacement = GetCoordinates();
                 isHorizontal = IsShipHorizontal();
                 shipGenerated = Ship.GenerateShipPlacement(ship, shipPlacement, isHorizontal);
-            } while (!shipBoard.IsValidPlacement(shipGenerated));
+            } while (!shipBoard.IsValidPlacement(shipGenerated)); //false
             return shipGenerated;
         }
 
@@ -90,10 +91,9 @@ namespace BattleShip.Models
             string coordinates;
             do
             {
-                Console.WriteLine("PlayerModel.GetCoordinates");
                 Console.WriteLine("Valid coordinates are [A-J] and [0-9]");
-                Console.WriteLine("For example, you could do A7 or J10");
-                Console.WriteLine("\tbut not H1 or b10");
+                Console.WriteLine("For example, you could do A7 or J9");
+                Console.WriteLine("\tbut not K1 or b10");
                 coordinates = Console.ReadLine();
                 if (!rgx.IsMatch(coordinates))
                 {
